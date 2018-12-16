@@ -9,4 +9,6 @@ nbproject
 
 /import/*.DBF
 /import/*.csv
+/import/*.html
 /config/config.php
+/import/curinfo/*

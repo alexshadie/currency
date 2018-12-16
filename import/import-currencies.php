@@ -89,10 +89,9 @@ foreach ($currenciesIso as $key => $item) {
     if (!$item['numeric_code']) {
         continue;
     }
-    $mysql->insert('currency', [
+    $mysql->insert('currency_fiat', [
         'id' => $item['numeric_code'],
         'code' => $item['alpha_code'],
-        'type' => 'fiat',
         'name' => $item['name'],
         'country_name' => $item['country'],
         'unit' => intval($item['unit']) ? intval($item['unit']) : 0,
@@ -100,3 +99,100 @@ foreach ($currenciesIso as $key => $item) {
     ]);
 }
 
+$currencyTable = file_get_contents(__DIR__ . "/coinmarket.html");
+if (!$currencyTable) {
+    $url = 'https://coinmarketcap.com/historical/' . date('Ymd') . '/';
+    $currencyTable = file_get_contents($url);
+    file_put_contents(__DIR__ . "/coinmarket.html", $currencyTable);
+}
+preg_match_all('!(<tr.*</tr>)!Uism', $currencyTable, $m);
+$currencies = [];
+foreach ($m[1] as $row) {
+    if (strpos($row, '<tr>') === 0) {
+        continue;
+    }
+    preg_match("!".
+        "<td.*>(.*)</td>.*" .
+        "(<td.*currency-name.*>.*</td>).*".
+        "(<td.*col-symbol.*>.*</td>)".
+        "!Uism", $row, $mm);
+
+    preg_match("!<img data-src=\"(.*)\"!U", $mm[2], $mmm);
+    $currency = [
+        "id" => trim($mm[1]),
+        "logo" => $mmm[1],
+    ];
+
+    preg_match("!<td.*data-sort=\"(.*)\">!Uism", $mm[2], $mmm);
+    $currency['name'] = $mmm[1];
+    preg_match("!<td.*class=\".*col-symbol.*\">(.*)</td>!Uism", $mm[3], $mmm);
+
+    $currency['code'] = $mmm[1];
+
+    preg_match("!href=\"/currencies/(.*)/\"!Uism", $mm[2], $mmm);
+    $currency['cmc_url'] = $mmm[1];
+    $currencies[] = $currency;
+}
+foreach ($currencies as $k => $currency) {
+    if (is_file(__DIR__ . "/curinfo/" . $currency['cmc_url'] . ".html")) {
+        $curinfo = file_get_contents(__DIR__ . "/curinfo/" . $currency['cmc_url'] . ".html");
+    } else {
+        echo "Getting {$currency['name']}\n";
+        $curinfo = file_get_contents("https://coinmarketcap.com/currencies/" . $currency['cmc_url'] . "/");
+        if (!$curinfo) {
+            echo "Waiting\n";
+            sleep(120);
+            $curinfo = file_get_contents("https://coinmarketcap.com/currencies/" . $currency['cmc_url'] . "/");
+        }
+        if ($curinfo) {
+            file_put_contents(__DIR__ . "/curinfo/" . $currency['cmc_url'] . ".html", $curinfo);
+        }
+        sleep(1);
+    }
+
+    preg_match_all("!<a href=\"(http[^\"]+)\"[^>]*>Website.*</a>!Uis", $curinfo, $m);
+    $currencies[$k]['site'] = $m[1] ?? [];
+    preg_match_all("!<a href=\"(http[^\"]+)\"[^>]*>Explorer.*</a>!Uis", $curinfo, $m);
+    $currencies[$k]['explorer'] = $m[1] ?? [];
+    preg_match_all("!<a href=\"(http[^\"]+)\"[^>]*>Chat.*</a>!Uis", $curinfo, $m);
+    $currencies[$k]['chat'] = $m[1] ?? [];
+    preg_match_all("!<a href=\"(http[^\"]+)\"[^>]*>Announcement</a>!Uis", $curinfo, $m);
+    $currencies[$k]['announcement'] = $m[1][0] ?? null;
+    preg_match_all("!<a href=\"(http[^\"]+)\"[^>]*>Source Code</a>!Uis", $curinfo, $m);
+    $currencies[$k]['sourceCode'] = $m[1][0] ?? null;
+    preg_match_all("!<a href=\"(http[^\"]+)\"[^>]*>Technical Documentation</a>!Uis", $curinfo, $m);
+    $currencies[$k]['documentation'] = $m[1][0] ?? null;
+    preg_match_all('!(Max|Total) Supply.*<span data-format-supply data-format-value="([\d\.e\+]+)">!Uism', $curinfo, $m);
+    $currencies[$k]['supply'] = $m[2][0] ?? null;
+    preg_match_all('!<span class="label label-warning">(.*)</span>!Uism', $curinfo, $m);
+    foreach ($m[1] ?? [] as $tag) {
+        if ($tag === 'Coin') {
+            $currencies[$k]['type'] = 'coin';
+        } elseif ($tag === 'Token') {
+            $currencies[$k]['type'] = 'token';
+        } elseif ($tag === 'Mineable') {
+            $currencies[$k]['mineable'] = true;
+        } else {
+            var_export($tag);
+        }
+    }
+}
+
+foreach ($currencies as $currency) {
+    $mysql->insert('currency_crypto', [
+        'id' => $currency['id'],
+        'code' => $currency['code'],
+        'name' => $currency['name'],
+        'logo' => $currency['logo'],
+        'explorer' => json_encode($currency['explorer']),
+        'site' => json_encode($currency['site']),
+        'chat' => json_encode($currency['chat']),
+        'announcement' => $currency['announcement'],
+        'confirmations' => null,
+        'supply' => floatval($currency['supply']),
+        'source_code' => $currency['sourceCode'],
+        'documentation' => $currency['documentation'],
+        'type' => $currency['type'],
+        'is_mineable' => ($currency['mineable'] ?? false) ? 1 : 0,
+    ]);
+}
