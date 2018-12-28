@@ -1,0 +1,16 @@
+<phpunit bootstrap="tests/bootstrap.php">
+    <testsuites>
+        <testsuite name="currency">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="currency_intergration">
+            <directory>tests/integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+</phpunit>
