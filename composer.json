@@ -13,7 +13,7 @@
         "psr/log": "^1.0",
         "monolog/monolog": "^1.17",
         "php": "^7.1",
-        "alexshadie/dbwrapper": "^0.0.4"
+        "alexshadie/dbwrapper": "^0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0",
