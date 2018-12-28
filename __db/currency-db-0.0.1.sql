@@ -1,21 +1,21 @@
-DROP TABLE IF EXISTS `currency`;
+DROP TABLE IF EXISTS `currency_fiat`;
 
-CREATE TABLE `currency` (
-  `id` INT NOT NULL,
-  `code` VARCHAR(16) NULL,
-  `name` VARCHAR(255) NULL,
-  `unit` TINYINT NULL,
-  `country_id` INT NULL,
-  `country_name` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`),
-  INDEX `idx_code` (`code` ASC),
-  INDEX `idx_name` (`name` ASC),
-  INDEX `idx_country` (`country_id` ASC)
+CREATE TABLE `currency_fiat` (
+    `id` INT NOT NULL,
+    `code` VARCHAR(16) NULL,
+    `name` VARCHAR(255) NULL,
+    `unit` TINYINT NULL,
+    `country_id` INT NULL,
+    `country_name` VARCHAR(255) NULL,
+    PRIMARY KEY (`id`),
+    INDEX `idx_code` (`code` ASC),
+    INDEX `idx_name` (`name` ASC),
+    INDEX `idx_country` (`country_id` ASC)
 );
 
-LOCK TABLES `currency` WRITE;
-/*!40000 ALTER TABLE `currency` DISABLE KEYS */;
-INSERT INTO `currency` VALUES (4,'AFA','Afghani',0,4,'AFGHANISTAN'),
+LOCK TABLES `currency_fiat` WRITE;
+/*!40000 ALTER TABLE `currency_fiat` DISABLE KEYS */;
+INSERT INTO `currency_fiat` VALUES (4,'AFA','Afghani',0,4,'AFGHANISTAN'),
     (8,'ALK','Old Lek',0,8,'ALBANIA'),
     (12,'DZD','Algerian Dinar',2,12,'ALGERIA'),
     (20,'ADP','Andorran Peseta',0,20,'ANDORRA'),
@@ -268,9 +268,9 @@ INSERT INTO `currency` VALUES (4,'AFA','Afghani',0,4,'AFGHANISTAN'),
     (997,'USN','US Dollar (Next day)',2,NULL,'UNITED STATES OF AMERICA (THE)'),
     (998,'USS','US Dollar (Same day)',0,NULL,'UNITED STATES'),
     (999,'XXX','The codes assigned for transactions where no currency is involved',0,NULL,'ZZ07_No_Currency');
-/*!40000 ALTER TABLE `currency` ENABLE KEYS */;
+/*!40000 ALTER TABLE `currency_fiat` ENABLE KEYS */;
 UNLOCK TABLES;
-
+DROP TABLE IF EXISTS `currency_crypto`;
 CREATE TABLE `currency_crypto` (
     `id` INT NOT NULL,
     `code` VARCHAR(16) NULL,
@@ -287,7 +287,7 @@ CREATE TABLE `currency_crypto` (
     `type` ENUM('coin', 'token') NULL,
     `is_mineable` TINYINT(1) NULL,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `code_UNIQUE` (`code` ASC)
+    INDEX `code_UNIQUE` (`code` ASC)
 );
 
 LOCK TABLES `currency_crypto` WRITE;

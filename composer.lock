@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "56fb513c353182fd11965828b453d7c8",
+    "content-hash": "505f81d393058fe25c640e68b638a917",
     "packages": [
         {
             "name": "alexshadie/dbwrapper",
-            "version": "0.0.4",
+            "version": "0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexshadie/dbwrapper.git",
-                "reference": "63eb941388882f2124f4e14a42a02d0b23f1ae71"
+                "reference": "a8a581eedd84bcfca587659640b32e5b204db777"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexshadie/dbwrapper/zipball/63eb941388882f2124f4e14a42a02d0b23f1ae71",
-                "reference": "63eb941388882f2124f4e14a42a02d0b23f1ae71",
+                "url": "https://api.github.com/repos/alexshadie/dbwrapper/zipball/a8a581eedd84bcfca587659640b32e5b204db777",
+                "reference": "a8a581eedd84bcfca587659640b32e5b204db777",
                 "shasum": ""
             },
             "require": {
@@ -46,10 +46,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/alexshadie/dbwrapper/tree/master",
+                "source": "https://github.com/alexshadie/dbwrapper/tree/0.0.5",
                 "issues": "https://github.com/alexshadie/dbwrapper/issues"
             },
-            "time": "2018-11-26T19:31:59+00:00"
+            "time": "2018-12-03T12:34:52+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1708,20 +1708,21 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "0df1908962e7a3071564e857d86874dad1ef204a"
+                "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/0df1908962e7a3071564e857d86874dad1ef204a",
-                "reference": "0df1908962e7a3071564e857d86874dad1ef204a",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/83e253c8e0be5b0257b881e1827274667c5c17a9",
+                "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.3 || ^7.0"
+                "php": "^5.3.3 || ^7.0",
+                "symfony/polyfill-ctype": "^1.8"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.6",
@@ -1754,7 +1755,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2018-01-29T19:49:41+00:00"
+            "time": "2018-12-25T11:19:39+00:00"
         }
     ],
     "aliases": [],
